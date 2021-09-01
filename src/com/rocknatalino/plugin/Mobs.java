@@ -126,8 +126,8 @@ public class Mobs implements Listener {
             if (fatalDamage) {
                 if (!blockedWorlds.contains(killer.getWorld().getName())) {
                     if (mobs.containsKey(killerUUID)) {
-                        killer.setCustomNameVisible(false);
                         killer.setCustomName(mobs.get(killerUUID));
+                        killer.setCustomNameVisible(false);
                         mobs.remove(killerUUID);
                     }
                 }
@@ -147,8 +147,8 @@ public class Mobs implements Listener {
             if (fatalDamage) {
                 if (!blockedWorlds.contains(killed.getWorld().getName())) {
                     if (mobs.containsKey(killedUUID)) {
-                        killed.setCustomNameVisible(false);
                         killed.setCustomName(mobs.get(killedUUID));
+                        killed.setCustomNameVisible(false);
                         mobs.remove(killedUUID);
                     }
                 }
