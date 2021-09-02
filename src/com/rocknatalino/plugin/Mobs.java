@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -79,6 +80,7 @@ public class Mobs implements Listener {
 
     @EventHandler
     public void onHit(EntityDamageEvent event) {
+
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
             if(entity.getType() != EntityType.ENDER_DRAGON && entity.getType() != EntityType.WITHER && entity.getType() != EntityType.PLAYER)
@@ -115,7 +117,25 @@ public class Mobs implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onKillEvent(EntityDamageByEntityEvent event)  {
+        if (event.getEntity() instanceof LivingEntity && event.getDamager() instanceof Projectile) {
+            LivingEntity killed = (LivingEntity) event.getEntity();
+            Entity killer = (Entity) ((Projectile) event.getDamager()).getShooter();
 
+            assert killer != null;
+            UUID killerUUID = killer.getUniqueId();
+            boolean fatalDamage = event.getFinalDamage() >= killed.getHealth();
+
+            if (fatalDamage) {
+                if (!blockedWorlds.contains(killer.getWorld().getName())) {
+                    if (mobs.containsKey(killerUUID)) {
+                        killer.setCustomName(mobs.get(killerUUID));
+                        killer.setCustomNameVisible(false);
+                        System.out.println(killer.getType());
+                        mobs.remove(killerUUID);
+                    }
+                }
+            }
+        }
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity killed = (LivingEntity) event.getEntity();
             Entity killer = event.getDamager();
@@ -137,7 +157,6 @@ public class Mobs implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onKilledEvent(EntityDamageEvent event) {
-
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity killed = (LivingEntity) event.getEntity();
 
