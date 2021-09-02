@@ -130,7 +130,6 @@ public class Mobs implements Listener {
                     if (mobs.containsKey(killerUUID)) {
                         killer.setCustomName(mobs.get(killerUUID));
                         killer.setCustomNameVisible(false);
-                        System.out.println(killer.getType());
                         mobs.remove(killerUUID);
                     }
                 }
