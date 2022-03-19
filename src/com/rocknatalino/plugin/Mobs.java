@@ -81,6 +81,8 @@ public class Mobs implements Listener {
     @EventHandler
     public void onHit(EntityDamageEvent event) {
 
+        if (!main.getConfig().getBoolean("mobs")) return;
+
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
             if(entity.getType() != EntityType.ENDER_DRAGON && entity.getType() != EntityType.WITHER && entity.getType() != EntityType.PLAYER)
@@ -176,6 +178,7 @@ public class Mobs implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void cleanCache(PluginDisableEvent event) {
+        Bukkit.getConsoleSender().sendMessage("cleaning cache...");
         mobs.forEach((uuid, s) -> {
             if (Bukkit.getEntity(uuid) != null) {
                 Objects.requireNonNull(Bukkit.getEntity(uuid)).setCustomName(s);

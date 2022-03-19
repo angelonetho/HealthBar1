@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -36,7 +37,6 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        this.saveConfig();
         objective.unregister();
         Bukkit.getConsoleSender().sendMessage("§e[HealthBar] Configuration file saved.");
     }
@@ -100,6 +100,11 @@ public class Main extends JavaPlugin implements Listener {
         } else {
             Bukkit.getOnlinePlayers().forEach(player -> checkDisabledWorld(player, player.getWorld().getName()));
         }
+    }
+
+    protected void reloadMobConfig(){
+        Bukkit.getPluginManager().callEvent(new PluginDisableEvent(this));
+        if (getConfig().getBoolean("mobs")) { getServer().getPluginManager().registerEvents(new Mobs(this), this);}
     }
 
 
