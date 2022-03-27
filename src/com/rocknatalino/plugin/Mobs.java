@@ -13,10 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class Mobs implements Listener {
 
@@ -24,6 +21,7 @@ public class Mobs implements Listener {
     final HashMap<UUID, String> mobs = new HashMap<>();
     String mobDisplayName;
     List<String> blockedWorlds;
+    List<String> blockedMobs;
     int secondsToHide, style;
     String[] defaultBar = new String[21];
 
@@ -32,12 +30,13 @@ public class Mobs implements Listener {
         mobDisplayName = Objects.requireNonNull(main.getConfig().getString("style-display")).replaceAll("&", "§");
         mobDisplayName = mobDisplayName.replaceAll("<3", "❤");
         blockedWorlds = main.getConfig().getStringList("disabled-worlds");
+        blockedMobs = main.getConfig().getStringList("disabled-mobs");
         secondsToHide = main.getConfig().getInt("mobs-fade-out");
         style = main.getConfig().getInt("mobs-style");
     }
 
     private String generateBarString(int style, int health, int maxHealth, String entityName){
-        String bar = "Err";
+        String bar = "";
 
         if(style != 2) {
             String aux = mobDisplayName.replaceAll("%entityName%", String.valueOf(entityName));
@@ -78,10 +77,21 @@ public class Mobs implements Listener {
         return bar;
     }
 
+
+
     @EventHandler
     public void onHit(EntityDamageEvent event) {
 
         if (!main.getConfig().getBoolean("mobs")) return;
+
+        if(main.mythicMobsEnabled){
+            boolean isMythicMob = new MythicMobsCompatibility().MythicMobShow(event.getEntity());
+            boolean isMythicEnabled = main.getConfig().getBoolean("mythic-mobs");
+            if(isMythicMob && !isMythicEnabled) return;
+
+        }
+
+        if(blockedMobs.contains(event.getEntity().getType().toString())) return;
 
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
@@ -178,7 +188,6 @@ public class Mobs implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void cleanCache(PluginDisableEvent event) {
-        Bukkit.getConsoleSender().sendMessage("cleaning cache...");
         mobs.forEach((uuid, s) -> {
             if (Bukkit.getEntity(uuid) != null) {
                 Objects.requireNonNull(Bukkit.getEntity(uuid)).setCustomName(s);

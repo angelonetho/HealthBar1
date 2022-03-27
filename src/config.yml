@@ -9,9 +9,12 @@ require-permission: false
 #
 #Placeholders: %entityName%, %health%, %maxHealth%, <3 becomes a hearth -> ❤
 mobs: true
+mythic-mobs: true
 mobs-style: 2
 style-display: '%health% &c<3'
 mobs-fade-out: 13
 #Global Configuration
 disabled-worlds:
   - world_example
+disabled-mobs:
+  - MOB_TYPE_IN_UPPER_CASE

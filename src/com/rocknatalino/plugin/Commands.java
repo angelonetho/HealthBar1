@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 
 public class Commands implements CommandExecutor {
     final Main main;
+    final String mobMessage = "§7When changing mob configuration, some bugs might appear, it's highly recommended to restart the server";
     public Commands(Main main) {
         this.main = main;
     }
@@ -14,9 +15,10 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(args.length == 1 && args[0].equalsIgnoreCase("reload")){
             main.reloadConfig();
-            main.saveConfig();
+            //main.saveConfig();
             main.createHealthBar();
             main.reloadMobConfig();
+            sender.sendMessage(mobMessage);
             sender.sendMessage("§a[HealthBar] Reload complete.");
             return true;
         }
@@ -27,7 +29,7 @@ public class Commands implements CommandExecutor {
                     main.getConfig().set("displayName", args[2]);
                     main.saveConfig();
                     main.createHealthBar();
-                    sender.sendMessage("§aChanged §2displayName §ato §r" + args[1].replaceAll("&","§") + "§a.");
+                    sender.sendMessage("§aChanged §2displayName §ato §r" + args[2].replaceAll("&","§") + "§a.");
                     return true;
                 case "setEnabled":
                     if(args[2].equalsIgnoreCase("true")){
@@ -65,24 +67,28 @@ public class Commands implements CommandExecutor {
                     main.getConfig().set("mobs-style", Integer.valueOf(args[2]));
                     main.saveConfig();
                     main.reloadMobConfig();
+                    sender.sendMessage(mobMessage);
                     sender.sendMessage("§aChanged §2mobs-style §ato §r" + args[2] + "§a.");
                     return true;
                 case "setText":
                     main.getConfig().set("style-display", args[2]);
                     main.saveConfig();
                     main.reloadMobConfig();
-                    sender.sendMessage("§aChanged §2displayName §ato §r" + args[1].replaceAll("&", "§") + "§a.");
+                    sender.sendMessage(mobMessage);
+                    sender.sendMessage("§aChanged §2displayName §ato §r" + args[2].replaceAll("&", "§") + "§a.");
                     return true;
                 case "setEnabled":
                     if (args[2].equalsIgnoreCase("true")) {
                         main.getConfig().set("mobs", true);
                         main.saveConfig();
                         main.reloadMobConfig();
+                        sender.sendMessage(mobMessage);
                         sender.sendMessage("§aThe mob's health bar is now visible");
                     } else {
                         main.getConfig().set("mobs", false);
                         main.saveConfig();
                         main.reloadMobConfig();
+                        sender.sendMessage(mobMessage);
                         sender.sendMessage("§aThe mob's health bar is now invisible");
                     }
                     return true;
@@ -100,7 +106,7 @@ public class Commands implements CommandExecutor {
         sender.sendMessage("§e/hb player setEnabled <true/false> - §7§oToggles health bar visibility");
         sender.sendMessage("§e/hb player requirePermission <true/false> - §7§oIs permission required");
         sender.sendMessage("§aMob commands:");
-        sender.sendMessage("§e/hb mob setStyle <id> ( - §7§oChanges the style of the bar (1 or 2)");
+        sender.sendMessage("§e/hb mob setStyle <id> - §7§oChanges the style of the bar (1 or 2)");
         sender.sendMessage("§e/hb mob setText <name> - §7§oChanges the value of the mob bar");
         sender.sendMessage("§e/hb mob setEnabled <true/false> - §7§oToggles health bar visibility");
         sender.sendMessage("§aGeneral commands:");

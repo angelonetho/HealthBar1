@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -21,6 +20,8 @@ public class Main extends JavaPlugin implements Listener {
     Scoreboard board;
     Objective objective;
 
+    public boolean mythicMobsEnabled;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -32,6 +33,13 @@ public class Main extends JavaPlugin implements Listener {
 
         int pluginId = 12564;
         new Metrics(this, pluginId);
+
+        getServer().getConsoleSender().sendMessage("Looking for compatible plugins...");
+
+        if(Bukkit.getPluginManager().isPluginEnabled("MythicMobs")) {
+            mythicMobsEnabled = true;
+            getServer().getConsoleSender().sendMessage("MythicMobs found");
+        }
 
     }
 
@@ -103,8 +111,7 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     protected void reloadMobConfig(){
-        Bukkit.getPluginManager().callEvent(new PluginDisableEvent(this));
-        if (getConfig().getBoolean("mobs")) { getServer().getPluginManager().registerEvents(new Mobs(this), this);}
+        Bukkit.getConsoleSender().sendMessage("§7When changing mob configuration, some bugs might appear, it's highly recommended to restart the server");
     }
 
 
