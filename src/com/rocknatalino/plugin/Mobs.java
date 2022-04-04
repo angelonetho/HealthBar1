@@ -22,6 +22,7 @@ public class Mobs implements Listener {
     String mobDisplayName;
     List<String> blockedWorlds;
     List<String> blockedMobs;
+    List<String> blockedNamedMobs;
     int secondsToHide, style;
     String[] defaultBar = new String[21];
 
@@ -31,6 +32,7 @@ public class Mobs implements Listener {
         mobDisplayName = mobDisplayName.replaceAll("<3", "❤");
         blockedWorlds = main.getConfig().getStringList("disabled-worlds");
         blockedMobs = main.getConfig().getStringList("disabled-mobs");
+        blockedNamedMobs = main.getConfig().getStringList("disabled-named-mobs");
         secondsToHide = main.getConfig().getInt("mobs-fade-out");
         style = main.getConfig().getInt("mobs-style");
     }
@@ -92,6 +94,8 @@ public class Mobs implements Listener {
         }
 
         if(blockedMobs.contains(event.getEntity().getType().toString())) return;
+
+        if(blockedNamedMobs.contains(event.getEntity().getName())) return;
 
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();

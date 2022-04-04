@@ -18,3 +18,5 @@ disabled-worlds:
   - world_example
 disabled-mobs:
   - MOB_TYPE_IN_UPPER_CASE
+disabled-named-mobs:
+  - mob_name
